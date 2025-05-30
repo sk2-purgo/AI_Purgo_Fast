@@ -35,7 +35,7 @@
 .
 ├── data/
 │   ├── train_label0_7319.csv      # 학습용 CSV 파일
-│   └── train_label1_7706.csv       # 테스트용 CSV 파일
+│   └── train_label1_7706.csv       # 학습용 CSV 파일
 ├── fasttext_gpt.py         # 실시간 욕설 탐지 및 정제 처리
 ├── fasttext_test.py        # FastText 모델 테스트용
 ├── fasttext_train.py       # 욕설/비욕설 FastText 모델 학습
