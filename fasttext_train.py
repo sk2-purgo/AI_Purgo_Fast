@@ -4,11 +4,11 @@ import pandas as pd
 import fasttext
 import csv
 import re
-
+from preprocess import cusswords_mapping
 
 # 설정
 CSV_PATH1 = 'data/train_label0_7319.csv'
-CSV_PATH2 = 'data/train_label1_7319.csv'
+CSV_PATH2 = 'data/train_label1_7706.csv'
 
 TRAIN_TXT_PATH = 'chat_fasttext_train_combined.txt'
 
@@ -23,52 +23,6 @@ DIM = 100
 def log(msg):
     now = time.strftime("[%Y-%m-%d %H:%M:%S]")
     print(f"{now} {msg}")
-
-
-# 초성, 변형 욕설 리스트
-cusswords_pattern = [
-    (r'ㅅ[\W\d_]*ㅂ', '시발'),
-    (r'시[\W\d_]*발', '시발'),
-    (r'ㅅ[\W\d_]*발', '시발'),
-    (r'ㅅ[\W\d_]*벌', '시발'),
-    (r'ㅆ[\W\d_]*ㅂ', '씨발'),
-    (r'씨[\W\d_]*발', '씨발'),
-    (r'ㅆ[\W\d_]*발', '씨발'),
-    (r'ㅆ[\W\d_]*벌', '씨발'),
-
-    (r'\bㅁ[\W\d_]*ㅊ\b', '미친'),
-
-    (r'ㅂ[\W\d_]*ㅅ', '병신'),
-    (r'병[\W\d_]*신', '병신'),
-    (r'ㅄ', '병신'),
-
-    (r'ㅈ[\W\d_]*ㄹ', '지랄'),
-    (r'ㅈ[\W\d_]*랄', '지랄'),
-    (r'지[\W\d_]*랄', '지랄'),
-
-    (r'ㅈ[\W\d_]*같', '좆같'),
-    (r'ㅈ[\W\d_]*망', '좆망'),
-    (r'좆[\W\d_]*', '좆'),
-    (r'ㅈ[\W\d_]*까', '좆까'),
-
-    (r'색[\W\d_]*끼', '새끼'),
-    (r'ㄱ[\W\d_]*ㅅ[\W\d_]*ㄲ', '개새끼'),
-
-    (r'존[\W\d_]*나', '존나'), 
-    (r'ㅈ[\W\d_]*ㄴ', '존나'), 
-    (r'ㅗ\b', '시발'),
-    (r'[^가-힣]놈[^가-힣]', '놈'),
-    (r'씨[\W\d_]*발[\W\d_]*년', '씨발년'),
-    (r'ㅆ[\W\d_]*ㅂ[\W\d_]*ㄴ', '씨발년'),
-    (r'좆[\W\d_]*같[\W\d_]*년', '좆같은년'),
-]
-
-
-# 초성, 변형 욕설 매핑 함수
-def cusswords_mapping(text):
-    for pattern, replacement in cusswords_pattern:
-        text = re.sub(pattern, replacement, text, flags=re.IGNORECASE)
-    return text
 
 
 #  전처리 함수 (학습용)
@@ -114,7 +68,7 @@ if __name__ == "__main__":
         maxn=6
     )
 
-    model_path = os.path.join(MODEL_SAVE_DIR, f'model_{TOTAL_EPOCHS}_1st.ft')
+    model_path = os.path.join(MODEL_SAVE_DIR, f'model_epoch_{TOTAL_EPOCHS}_23th.ft')
     model.save_model(model_path)
 
     end_time = time.time()
