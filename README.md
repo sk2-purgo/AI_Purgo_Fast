@@ -66,5 +66,5 @@
    
 3. **API 서버 실행**
     ```bash
-    uvicorn fasttext_gpt:app --host 0.0.0.0 --port 5000 --workers 4
+    uvicorn fasttext_gpt:app --host 0.0.0.0 --port 5000 --reload
    ```
