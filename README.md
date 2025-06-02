@@ -1,3 +1,6 @@
+![header](https://capsule-render.vercel.app/api?type=waving&color=gradient&height=192&section=header&text=AI%20PURGO%20FAST&fontSize=65&animation=fadeIn&fontColor=FFF)
+
+
 # AI_Purgo_Fast
 
 욕설 및 비속어 탐지를 위한 FastText + GPT-3.5 기반 정제 시스템입니다. 욕설 단어를 탐지하고, 정중한 표현으로 순화합니다.
