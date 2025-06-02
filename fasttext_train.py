@@ -3,7 +3,6 @@ import time
 import pandas as pd
 import fasttext
 import csv
-import re
 from preprocess import cusswords_mapping
 
 # 설정

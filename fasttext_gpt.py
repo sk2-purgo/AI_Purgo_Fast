@@ -6,6 +6,7 @@ import os
 import re   
 from openai import OpenAI  
 from dotenv import load_dotenv 
+from asyncio import to_thread
 
 
 # 환경변수 로드 (.env 파일에서 OPENAI_API_KEY 읽어오기)
@@ -65,7 +66,7 @@ def rewrite_text_gpt3_5(text: str) -> str:
 
 다음 문장을 아래 조건에 맞춰 순화해주세요:
 
-[💬 순화 조건]
+[순화 조건]
 1. 문장에 욕설, 비속어, 혐오, 성적인 표현이 있을 경우 → 문맥을 고려하여 **정중하고 바른 표현**으로 자연스럽게 바꾸세요.
 2. 노골적이지 않아도 공격적이거나 부정적인 뉘앙스를 가진 단어는 **긍정적이고 포용적인 표현**으로 순화하세요.
 3. **문장의 구조와 말투는 유지**하면서, 문제가 되는 단어만 바꾸는 것이 핵심입니다.
@@ -73,12 +74,12 @@ def rewrite_text_gpt3_5(text: str) -> str:
 5. **욕설이 없는 경우에는 문장을 수정하지 않고 그대로 반환**하세요.
 6. 출력은 반드시 **정제된 문장 한 줄만**, 설명이나 따옴표 없이 출력하세요.
 
-[🔴 반드시 순화해야 할 표현 예시]
+[반드시 순화해야 할 표현 예시]
 - 초성 욕설 (예: ㅅㅂ, ㅈㄹ, ㅄ 등)
 - 감정 과격 표현 (예: 존나, 개같은, 지랄 등)
 - 인신 공격 표현 (예: 미친놈, 병신, 새끼, 븅신 등)
 
-[🧠 순화 예시]
+[순화 예시]
 - "씨발 오늘 왜 이래" → "아 진짜 오늘 왜 이래"
 - "개같은 새끼" → "정말 못된 사람"
 - "존나 짜증나" → "정말 짜증나"
@@ -130,13 +131,13 @@ async def root():
 @app.post("/analyze")
 async def analyze(request: TextRequest):
     text = request.text.strip()  
-    print(f"입력 문장: {text}")
 
-    fasttext_result = detect_fasttext(text)  
+    # FastText 측정
+    fasttext_result = detect_fasttext(text)
+
     fasttext_hit = 1 if fasttext_result else 0  
-    print(f"🔍 FastText 탐지 결과: {fasttext_result}")
 
-    # 기본 응답 구조
+     # 기본 응답 구조
     response = {
         "fasttext": {"is_bad": fasttext_hit, "detected_words": fasttext_result},
         "result": {"original_text": text, "rewritten_text": text},
@@ -145,14 +146,13 @@ async def analyze(request: TextRequest):
 
     # FastText가 bad로 판단한 경우에만 GPT 정제
     if fasttext_hit:
-        print("✅ FastText 욕설 감지 → GPT 정제 시작")
-        rewritten = rewrite_text_gpt3_5(text)
+        rewritten = await to_thread(rewrite_text_gpt3_5, text)
+
         response["result"]["rewritten_text"] = rewritten
         response["final_decision"] = 1
-    else:
-        print("⭕ 확률 기준 미달로 GPT 정제 없이 원문 반환")
-
+    
     return JSONResponse(content=response)
+
 
 if __name__ == "__main__":
     import uvicorn
